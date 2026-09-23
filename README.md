@@ -14,26 +14,23 @@ The repository includes a load generator (`examples/throughput_bench.rs`) design
 
 ```text
 === Test Parameters ===
-Clients: 40
+lients: 40
 Frames per client: 10000
 Payload size: 1024 bytes
 Downstream Worker Delay: 50 ms
-=========================
-
 === Benchmark Results ===
-Time Elapsed:  1.04s
+Time Elapsed:  1.32s
 Total Data:    392.15 MB (400000 frames)
-Throughput:    376.96 MB/s
-Frame Rate:    384503 frames/sec
-=========================
+Throughput:    296.01 MB/s
+Frame Rate:    301935 frames/sec
 ```
 
 ### Key Findings
 
-* **Empirically Proven Non-Blocking Ingress**: The test logs explicitly recorded multiple worker lag events (e.g., `event="worker_lagged" skipped_messages=31`), confirming that slow subscribers drop frames without backpressuring or stalling TCP socket reads.
-* **Sustained High Ingestion**: Despite active downstream frame drops, the broker maintained a constant ingestion rate of **376.96 MB/s** (**384,503 frames/sec**) across 40 concurrent TCP streams.
-* **Bounded Resource Usage**: Fixed broadcast channel capacity (`1024` frames) successfully prevented RAM bloat under the subscriber latency, enforcing backpressure safety at the message boundary.
-* **Zero Frame Corruption**: All 400,000 frames were parsed cleanly by the length-prefixed binary codec without deserialization errors or partial read failures.
+* Empirically Proven Non-Blocking Ingress: The test logs explicitly recorded multiple worker lag events (e.g., event="worker_lagged" skipped_messages=28064), confirming that slow subscribers drop frames without backpressuring or stalling TCP socket reads.
+* Sustained High Ingestion: Despite active downstream frame drops, the broker maintained a constant ingestion rate of 296.01 MB/s (301,935 frames/sec) across 40 concurrent TCP streams.
+* Bounded Resource Usage: Fixed broadcast channel capacity (1024 frames) successfully prevented RAM bloat under the subscriber latency, enforcing backpressure safety at the message boundary.
+* Zero Frame Corruption: All 400,000 frames were parsed cleanly by the length-prefixed binary codec without deserialization errors or partial read failures.
 
 ### Hardware & OS Specification
 
